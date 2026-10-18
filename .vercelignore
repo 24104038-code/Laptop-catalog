@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.git
+.gitignore
+.system_generated/
+scratch/
+check_db.py
+test_catalog.py
+product_catalog/

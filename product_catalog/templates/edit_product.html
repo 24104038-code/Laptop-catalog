@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ laptop.brand_name }} {{ laptop.model }} - Laptop Catalog{% endblock %}
+
+{% block content %}
+<div class="form-page-container">
+  <div class="page-breadcrumb">
+    <a href="{{ url_for('product_details', product_id=laptop._id) }}">&larr; Back to Laptop Details</a>
+  </div>
+
+  <div class="card form-card">
+    <div class="form-header">
+      <h1 class="form-title">&#9998; Edit Laptop in MongoDB</h1>
+      <p class="form-subtitle">Update specifications, pricing, stock inventory, or photo for {{ laptop.brand_name }} {{ laptop.model }}. Changes are saved directly to this MongoDB document.</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('edit_product', product_id=laptop._id) }}" class="catalog-form">
+      <fieldset class="form-section">
+        <legend class="section-legend">
+          <span class="legend-badge">&#9998;</span> Laptop Details (ID: {{ laptop._id }})
+        </legend>
+
+        <div class="form-grid-2">
+          <!-- Brand Name -->
+          <div class="form-group">
+            <label for="brand_name" class="form-label">
+              Brand Name <span class="required-star">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="brand_name" 
+              name="brand_name" 
+              value="{{ laptop.brand_name }}" 
+              required 
+              class="form-control"
+            >
+            <span class="form-hint">Manufacturer brand name</span>
+          </div>
+
+          <!-- Model -->
+          <div class="form-group">
+            <label for="model" class="form-label">
+              Laptop Model <span class="required-star">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="model" 
+              name="model" 
+              value="{{ laptop.model }}" 
+              required 
+              class="form-control"
+            >
+            <span class="form-hint">Model identifier</span>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <!-- Price -->
+          <div class="form-group">
+            <label for="price" class="form-label">
+              Price (₹) <span class="required-star">*</span>
+            </label>
+            <input 
+              type="number" 
+              id="price" 
+              name="price" 
+              value="{{ laptop.price }}" 
+              step="0.01" 
+              min="0" 
+              required 
+              class="form-control"
+            >
+            <span class="form-hint">Retail price</span>
+          </div>
+
+          <!-- Stock -->
+          <div class="form-group">
+            <label for="stock" class="form-label">
+              Stock Units <span class="required-star">*</span>
+            </label>
+            <input 
+              type="number" 
+              id="stock" 
+              name="stock" 
+              value="{{ laptop.stock }}" 
+              step="1" 
+              min="0" 
+              required 
+              class="form-control"
+            >
+            <span class="form-hint">Inventory units in stock</span>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <!-- Category -->
+          <div class="form-group">
+            <label for="category" class="form-label">
+              Category
+            </label>
+            <input 
+              type="text" 
+              id="category" 
+              name="category" 
+              value="{{ laptop.category | default('Electronics', true) }}" 
+              readonly 
+              class="form-control bg-readonly"
+            >
+          </div>
+
+          <!-- Laptop Photo URL -->
+          <div class="form-group">
+            <label for="image_url" class="form-label">
+              Laptop Photo URL
+            </label>
+            <div class="photo-input-group">
+              <input 
+                type="text" 
+                id="image_url" 
+                name="image_url" 
+                value="{{ laptop.image_url }}" 
+                class="form-control"
+              >
+              {% if laptop.image_url %}
+                <div class="edit-thumb-wrapper">
+                  <img 
+                    src="{{ laptop.image_url }}" 
+                    alt="Laptop preview" 
+                    class="edit-preview-thumb"
+                  >
+                </div>
+              {% endif %}
+            </div>
+            <span class="form-hint">Local image path or web URL</span>
+          </div>
+        </div>
+
+        <!-- Specifications -->
+        <div class="form-group">
+          <label for="specification" class="form-label">
+            Hardware Specifications
+          </label>
+          <textarea 
+            id="specification" 
+            name="specification" 
+            rows="3" 
+            class="form-control"
+          >{{ laptop.specification }}</textarea>
+          <span class="form-hint">Technical hardware details (Processor, RAM, Storage, Screen)</span>
+        </div>
+      </fieldset>
+
+      <!-- Action Buttons -->
+      <div class="form-actions-footer">
+        <button type="submit" class="btn btn-primary btn-lg">
+          Save Changes to MongoDB
+        </button>
+        <a href="{{ url_for('product_details', product_id=laptop._id) }}" class="btn btn-secondary btn-lg">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

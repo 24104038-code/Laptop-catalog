@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Add New Laptop - Laptop Catalog{% endblock %}
+
+{% block content %}
+<div class="form-page-container">
+  <div class="page-breadcrumb">
+    <a href="{{ url_for('index') }}">&larr; Back to Laptop Catalog</a>
+  </div>
+
+  <div class="card form-card">
+    <div class="form-header">
+      <h1 class="form-title">&#65291; Add New Laptop to MongoDB</h1>
+      <p class="form-subtitle">Enter laptop details below. Submitting this form creates a new laptop document directly in your MongoDB collection.</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('add_product') }}" class="catalog-form">
+      <fieldset class="form-section">
+        <legend class="section-legend">
+          <span class="legend-badge">&#128187;</span> Laptop Specification &amp; Inventory Information
+        </legend>
+
+        <div class="form-grid-2">
+          <!-- Brand Name -->
+          <div class="form-group">
+            <label for="brand_name" class="form-label">
+              Brand Name <span class="required-star">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="brand_name" 
+              name="brand_name" 
+              value="{{ form_data.brand_name | default('', true) }}" 
+              placeholder="e.g. HP, Dell, Apple, Lenovo, ASUS, MSI, Acer, Razer" 
+              required 
+              class="form-control"
+            >
+            <span class="form-hint">Laptop manufacturer brand</span>
+          </div>
+
+          <!-- Model -->
+          <div class="form-group">
+            <label for="model" class="form-label">
+              Laptop Model <span class="required-star">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="model" 
+              name="model" 
+              value="{{ form_data.model | default('', true) }}" 
+              placeholder="e.g. Inspiron 3520, Pavilion 15, MacBook Air M2, IdeaPad Slim 3" 
+              required 
+              class="form-control"
+            >
+            <span class="form-hint">Specific laptop model name</span>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <!-- Price -->
+          <div class="form-group">
+            <label for="price" class="form-label">
+              Price (₹) <span class="required-star">*</span>
+            </label>
+            <input 
+              type="number" 
+              id="price" 
+              name="price" 
+              value="{{ form_data.price | default('', true) }}" 
+              placeholder="e.g. 55000" 
+              step="0.01" 
+              min="0" 
+              required 
+              class="form-control"
+            >
+            <span class="form-hint">Retail price in Indian Rupees</span>
+          </div>
+
+          <!-- Stock -->
+          <div class="form-group">
+            <label for="stock" class="form-label">
+              Stock Units <span class="required-star">*</span>
+            </label>
+            <input 
+              type="number" 
+              id="stock" 
+              name="stock" 
+              value="{{ form_data.stock | default('', true) }}" 
+              placeholder="e.g. 10" 
+              step="1" 
+              min="0" 
+              required 
+              class="form-control"
+            >
+            <span class="form-hint">Available inventory stock count</span>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <!-- Category -->
+          <div class="form-group">
+            <label for="category" class="form-label">
+              Category
+            </label>
+            <input 
+              type="text" 
+              id="category" 
+              name="category" 
+              value="Electronics" 
+              readonly 
+              class="form-control bg-readonly"
+            >
+          </div>
+
+          <!-- Laptop Photo URL -->
+          <div class="form-group">
+            <label for="image_url" class="form-label">
+              Laptop Photo URL / Local Path
+            </label>
+            <input 
+              type="text" 
+              id="image_url" 
+              name="image_url" 
+              value="{{ form_data.image_url | default('/static/images/hero_laptop.jpg', true) }}" 
+              placeholder="e.g. /static/images/hero_laptop.jpg or https://..." 
+              class="form-control"
+            >
+            <span class="form-hint">Image path or web URL for this laptop</span>
+          </div>
+        </div>
+
+        <!-- Specifications -->
+        <div class="form-group">
+          <label for="specification" class="form-label">
+            Hardware Specifications (Processor, RAM, Storage, Display)
+          </label>
+          <textarea 
+            id="specification" 
+            name="specification" 
+            rows="3" 
+            placeholder="e.g. Intel Core i5 12th Gen, 16GB RAM, 512GB SSD, 15.6-inch FHD Anti-Glare Display" 
+            class="form-control"
+          >{{ form_data.specification | default('', true) }}</textarea>
+          <span class="form-hint">Detailed technical hardware specifications</span>
+        </div>
+      </fieldset>
+
+      <!-- Action Buttons -->
+      <div class="form-actions-footer">
+        <button type="submit" class="btn btn-primary btn-lg">
+          &#65291; Add Laptop to MongoDB
+        </button>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

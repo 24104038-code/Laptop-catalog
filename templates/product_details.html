@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}{{ laptop.brand_name }} {{ laptop.model }} - Laptop Details{% endblock %}
+
+{% block content %}
+<div class="details-page-container">
+  <!-- Breadcrumb Navigation -->
+  <div class="page-breadcrumb">
+    <a href="{{ url_for('index') }}">&larr; Back to Laptop Catalog</a>
+  </div>
+
+  <!-- Laptop Product Hero Card -->
+  <section class="card details-hero-card">
+    <div class="hero-layout-grid">
+      <!-- Laptop Photo -->
+      <div class="hero-photo-col">
+        <div class="hero-photo-wrapper">
+          <img 
+            src="{{ laptop.image_url | default('/static/images/hero_laptop.jpg', true) }}" 
+            alt="{{ laptop.brand_name }} {{ laptop.model }}" 
+            class="hero-laptop-img"
+          >
+          <div class="hero-photo-badge">
+            {{ laptop.brand_name }} &bull; {{ laptop.model }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Laptop Info & Key Metrics -->
+      <div class="hero-info-col">
+        <div class="hero-top-row">
+          <div class="hero-title-group">
+            <div class="master-pill-row">
+              <span class="category-pill">{{ laptop.category }}</span>
+              <span class="brand-pill-bold">{{ laptop.brand_name }}</span>
+              {% if laptop.stock > 0 %}
+                <span class="stock-badge stock-in">In Stock ({{ laptop.stock }} Units)</span>
+              {% else %}
+                <span class="stock-badge stock-out">Out of Stock</span>
+              {% endif %}
+            </div>
+            <h1 class="details-product-name">{{ laptop.brand_name }} {{ laptop.model }}</h1>
+          </div>
+
+          <div class="hero-actions-group">
+            <a href="{{ url_for('edit_product', product_id=laptop._id) }}" class="btn btn-warning">
+              &#9998; Edit Laptop
+            </a>
+            <form method="POST" action="{{ url_for('delete_product', product_id=laptop._id) }}" class="inline-form">
+              <button type="submit" class="btn btn-danger">
+                &#128465; Delete Laptop
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <p class="details-description">
+          Hardware specification: {{ laptop.specification }}
+        </p>
+
+        <!-- Key Metrics Cards Grid -->
+        <div class="metrics-grid">
+          <!-- Price -->
+          <div class="metric-card">
+            <span class="metric-icon">&#128201;</span>
+            <div class="metric-content">
+              <span class="metric-label">Price</span>
+              <span class="metric-number price-highlight">{{ laptop.price | currency }}</span>
+            </div>
+          </div>
+
+          <!-- Stock Units -->
+          <div class="metric-card">
+            <span class="metric-icon">&#128230;</span>
+            <div class="metric-content">
+              <span class="metric-label">Available Stock</span>
+              <span class="metric-number">{{ laptop.stock }} <small>units</small></span>
+            </div>
+          </div>
+
+          <!-- Brand -->
+          <div class="metric-card">
+            <span class="metric-icon">&#127991;</span>
+            <div class="metric-content">
+              <span class="metric-label">Manufacturer</span>
+              <span class="metric-number">{{ laptop.brand_name }}</span>
+            </div>
+          </div>
+
+          <!-- MongoDB ID -->
+          <div class="metric-card">
+            <span class="metric-icon">&#128452;</span>
+            <div class="metric-content">
+              <span class="metric-label">MongoDB Document</span>
+              <span class="metric-number"><small>{{ laptop._id }}</small></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Laptop Specifications & Details Table Section -->
+  <section class="card table-card">
+    <div class="table-card-header">
+      <div>
+        <h2 class="table-section-title">All Laptops in Catalog (Quick Comparison)</h2>
+        <p class="table-section-sub">Each row corresponds to an individual document stored in the MongoDB laptops collection.</p>
+      </div>
+      <span class="badge badge-info">{{ all_laptops|length }} Total Laptops in MongoDB</span>
+    </div>
+
+    {% if all_laptops %}
+      <div class="table-responsive">
+        <table class="brands-data-table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Photo</th>
+              <th scope="col">Brand</th>
+              <th scope="col">Model</th>
+              <th scope="col">Price</th>
+              <th scope="col">Stock</th>
+              <th scope="col">Hardware Specifications</th>
+              <th scope="col">Status</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in all_laptops %}
+              <tr {% if item._id == laptop._id %}class="highlight-row"{% endif %}>
+                <td class="col-num">{{ loop.index }}</td>
+                <td class="col-photo">
+                  <div class="table-photo-wrapper">
+                    <img 
+                      src="{{ item.image_url | default('/static/images/hero_laptop.jpg', true) }}" 
+                      alt="{{ item.brand_name }} {{ item.model }}" 
+                      class="table-brand-thumb"
+                      loading="lazy"
+                    >
+                  </div>
+                </td>
+                <td class="col-brand">
+                  <span class="brand-pill-bold">{{ item.brand_name }}</span>
+                </td>
+                <td class="col-model">
+                  <strong>{{ item.model }}</strong>
+                  {% if item._id == laptop._id %}
+                    <span class="badge badge-active" style="margin-left: 0.3rem;">Selected</span>
+                  {% endif %}
+                </td>
+                <td class="col-price">{{ item.price | currency }}</td>
+                <td class="col-stock">{{ item.stock }} units</td>
+                <td class="col-spec">
+                  {{ item.specification | default('Standard configuration', true) }}
+                </td>
+                <td class="col-status">
+                  {% if item.stock > 0 %}
+                    <span class="stock-badge stock-in">In Stock ({{ item.stock }})</span>
+                  {% else %}
+                    <span class="stock-badge stock-out">Out of Stock</span>
+                  {% endif %}
+                </td>
+                <td class="col-action">
+                  <a href="{{ url_for('product_details', product_id=item._id) }}" class="btn btn-sm btn-info">
+                    View
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </section>
+
+  <!-- Bottom Navigation Buttons -->
+  <div class="details-bottom-bar">
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+      &larr; Back to Catalog
+    </a>
+    <a href="{{ url_for('edit_product', product_id=laptop._id) }}" class="btn btn-warning">
+      Edit This Laptop
+    </a>
+    <a href="{{ url_for('add_product') }}" class="btn btn-primary">
+      &#65291; Add Another Laptop
+    </a>
+  </div>
+</div>
+{% endblock %}

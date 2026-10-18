@@ -373,6 +373,9 @@ def calculate_catalog_metrics(col):
 # ==========================================
 
 @app.route("/")
+@app.route("/index")
+@app.route("/api")
+@app.route("/api/index")
 def index():
     """
     Laptop Catalog Dashboard:
